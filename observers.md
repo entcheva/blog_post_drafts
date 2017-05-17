@@ -7,7 +7,7 @@
 Active Record Observers are a great tool for when you want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
 
 ### Active Record callbacks vs. ActiveRecord::Observers
-Active Record's built in callback [helper methods](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) can easily hook into the object lifecycle to affect change. However, when callbacks concern multiple models, we end up violating the single responsibility principle, so we try to avoid them if we can. Using observers brings back single responsibility to models while still allowing us to still hook into the object lifecycle.
+Active Record's built in callback [helper methods](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) can easily hook into the object lifecycle to affect change. However, when callbacks affect objects outside the model, we end up violating the single responsibility principle, so we try to avoid them if we can. Using observers brings back single responsibility to models while still allowing us to still hook into the object lifecycle.
 
 The Observer is a central place outside of the original class to watch for database changes. By extracting that logic outside of the model, we bring back single responsibility and avoid commingling models. Observers only report or take action on a process, and should not affect a process directly.
 
