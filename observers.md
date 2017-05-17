@@ -4,16 +4,16 @@
 >
 > Design Patterns: Elements of Reusable Object-Oriented Software
 
-The Observer pattern and Active Record Observers are a great tool for when you want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
+Active Record Observers are a great tool for when you want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
 
 ### Active Record callbacks vs. ActiveRecord::Observers
-Active Record's built in callback [helper methods](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) can easily hook into the object lifecycle to affect change. However, when callbacks concern multiple models, we end up violating the single responsibility principle, so we try to avoid them if we can. Using observers brings back single responsibility to models while still allowing us to still hook into the object lifecycle.  
+Active Record's built in callback [helper methods](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) can easily hook into the object lifecycle to affect change. However, when callbacks concern multiple models, we end up violating the single responsibility principle, so we try to avoid them if we can. Using observers brings back single responsibility to models while still allowing us to still hook into the object lifecycle.
 
-The Observer is a central place outside of the original class to watch for database changes. By extracting that logic outside of the model, we bring back single responsiblity and avoid comingling models. Observers only report or take action on a process, and do not affect a process directly.
+The Observer is a central place outside of the original class to watch for database changes. By extracting that logic outside of the model, we bring back single responsibility and avoid commingling models. Observers only report or take action on a process, and should not affect a process directly.
 
-An observer is an implementation of the [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern). You can [write your own](https://github.com/nslocum/design-patterns-in-ruby/tree/master/observer), or you can use Rails' [ActiveRecord::Observer](http://api.rubyonrails.org/v3.2/classes/ActiveRecord/Observer.html), which was removed from core in Rails 4.0 but is now [available as a gem](https://github.com/rails/rails-observers).
+[ActiveRecord::Observer](http://api.rubyonrails.org/v3.2/classes/ActiveRecord/Observer.html) is an implementation of the [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern). It was removed from core in Rails 4.0 but is now [available as a gem](https://github.com/rails/rails-observers).
 
-In the example below, we're using a callback to initiate an action after creating a new user. We're mixing `MessageMailer` into the `User` class:
+In the example below, we're referencing `MessageMailer` in the `User` class, increasing the `User` class's responsibility:
 
 ```
 class User
@@ -36,7 +36,7 @@ class UserObserver < ActiveRecord::Observer
 end
 ```
 
-Observers are especially helpful in cases like the below where there are multiple models comingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
+Observers are especially helpful in cases like the below where there are multiple models commingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
 
 ```
 class AuditObserver < ActiveRecord::Observer
