@@ -1,6 +1,4 @@
-# ActiveRecord::Observers
-
-### Intro
+# ActiveRecord::Observers 101
 
 > *"A common side effect of partitioning a system into a collection of cooperating classes is the need to maintain consistency between related objects. You don't want to achieve consistency by making the classes tightly coupled, because that reduces their reusability."*  
 > 
@@ -76,15 +74,9 @@ Another thing to consider is that since we're dealing with application state, it
  
 For example, payment processing transactions usually have many steps. Consider a case where a transaction is created but the payment is then rejected. If we have an observer with an `after_create` callback, that callback is going to fire after `create`, regardless of whether that transaction is eventually rolled back. 
 
-To account for this, we can write our observers and callbacks in a way that assures that we only inform the observers after a "consistent set of changes" has completed:
+To account for this, we can use `before` and `after` hooks in callbacks to assure that we only inform observers after all changes have completed and the observer is heady to take action. 
 
-```
-stuffs
-``` 
-
-In the above example, we wait until all of the actions are done before informing our observers.
-
-user transaction - payment, confirmation email
+View the [Active Record Callbacks documentation](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) for a full list of callbacks in the order they will be executed.
 
 ### References
 
@@ -93,9 +85,3 @@ user transaction - payment, confirmation email
 [Upcase: The Weekly Iteration: Callbacks](https://thoughtbot.com/upcase/videos/callbacks)  
 [Design Patterns In Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452)  
 [Design Patterns: Elements of Reusable Object-Oriented Software](http://a.co/7iVlVgw)
-
-
-
-comingle
-
-
