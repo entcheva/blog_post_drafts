@@ -1,7 +1,7 @@
 # ActiveRecord::Observers 101
 
 > *"A common side effect of partitioning a system into a collection of cooperating classes is the need to maintain consistency between related objects. You don't want to achieve consistency by making the classes tightly coupled, because that reduces their reusability."*  
-> 
+>
 > Design Patterns: Elements of Reusable Object-Oriented Software
 
 The Observer pattern and Active Record Observers are a great tool for when you want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
@@ -48,11 +48,11 @@ class AuditObserver < ActiveRecord::Observer
 end
 ```
 
-Obervers are especially helpful in cases like the above where there are multiple models comingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed. 
+Obervers are especially helpful in cases like the above where there are multiple models comingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
 
 ### Accounting for unseen side effects
 
-One thing to consider with observers is that we now have events that are not readily apparent in our observed class. Due to these unseen side effects, it can be less clear what's happening, and if there's a bug, it can be hard to track, since there is no direct link to the thing that is observing it. 
+One thing to consider with observers is that we now have events that are not readily apparent in our observed class. Due to these unseen side effects, it can be less clear what's happening, and if there's a bug, it can be hard to track, since there is no direct link to the thing that is observing it.
 
 To mitigate this potential downside, we can write observers that reference the model they are observing. One way to do that is with `logger`. In this example from the [Rails documentation](http://api.rubyonrails.org/v2.3/classes/ActiveRecord/Observer.html), the observer uses `ActiveSupport::Logger` to log when specific callbacks are triggered:
 
@@ -71,10 +71,10 @@ class ContactObserver < ActiveRecord::Observer
 ### Staying in sync
 
 Another thing to consider is that since we're dealing with application state, it's possible that as the application transitions from one state to another, our observers can become out of sync.
- 
-For example, payment processing transactions usually have many steps. Consider a case where a transaction is created but the payment is then rejected. If we have an observer with an `after_create` callback, that callback is going to fire after `create`, regardless of whether that transaction is eventually rolled back. 
 
-To account for this, we can use `before` and `after` hooks in callbacks to assure that we only inform observers after all changes have completed and the observer is heady to take action. 
+For example, payment processing transactions usually have many steps. Consider a case where a transaction is created but the payment is then rejected. If we have an observer with an `after_create` callback, that callback is going to fire after `create`, regardless of whether that transaction is eventually rolled back.
+
+To account for this, we can use `before` and `after` hooks in callbacks to assure that we only inform observers after all changes have completed and the observer is heady to take action.
 
 View the [Active Record Callbacks documentation](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) for a full list of callbacks in the order they will be executed.
 
