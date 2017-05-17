@@ -36,7 +36,7 @@ class UserObserver < ActiveRecord::Observer
 end
 ```
 
-Observers can also watch multiple classes:
+Observers are especially helpful in cases like the below where there are multiple models comingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
 
 ```
 class AuditObserver < ActiveRecord::Observer
@@ -47,8 +47,6 @@ class AuditObserver < ActiveRecord::Observer
 	end
 end
 ```
-
-Obervers are especially helpful in cases like the above where there are multiple models comingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
 
 ### Accounting for unseen side effects
 
