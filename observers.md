@@ -26,7 +26,7 @@ class User
 end
 ```
 
-As a better alternative, by using observers in the example below, we extract the `MessageMailer` logic out of `User` and put it in its own class, `UserObserver`, that watches for an event and dispatches an action accordingly:
+Alternatively, by using observers in the example below, we extract the `MessageMailer` logic out of `User` and put it in its own class, `UserObserver`, that watches for an event and dispatches an action accordingly:
 
 ```
 class UserObserver < ActiveRecord::Observer
@@ -75,6 +75,10 @@ For example, payment processing transactions usually have many steps. Consider a
 To account for this, we can use `before` and `after` hooks in callbacks to assure that we only inform observers after all changes have completed and the observer is heady to take action.
 
 View the [Active Record Callbacks documentation](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) for a full list of callbacks in the order they will be executed.
+
+
+### when to use
+### when not to use
 
 ### References
 
