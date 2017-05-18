@@ -4,7 +4,7 @@
 >
 > Design Patterns: Elements of Reusable Object-Oriented Software
 
-Active Record Observers are a great tool for when you want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
+Active Record Observers are a great tool for when we want to monitor an event occurence and take action, and especially when that event concerns multiple classes.
 
 ### Active Record callbacks vs. ActiveRecord::Observers
 Active Record's built in callback [helper methods](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) can easily hook into the object lifecycle to affect change. However, when callbacks affect objects outside the model, we end up violating the single responsibility principle, so we try to avoid them if we can. Using observers brings back single responsibility to models while still allowing us to still hook into the object lifecycle.
@@ -12,6 +12,8 @@ Active Record's built in callback [helper methods](http://guides.rubyonrails.org
 The Observer is a central place outside of the original class to watch for database changes. By extracting that logic outside of the model, we bring back single responsibility and avoid commingling models. Observers only report or take action on a process, and should not affect a process directly.
 
 [ActiveRecord::Observer](http://api.rubyonrails.org/v3.2/classes/ActiveRecord/Observer.html) is an implementation of the [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern). It was removed from core in Rails 4.0 but is now [available as a gem](https://github.com/rails/rails-observers).
+
+##### Example: Callbacks
 
 In the example below, we're referencing `MessageMailer` in the `User` class, increasing the `User` class's responsibility:
 
@@ -26,6 +28,8 @@ class User
 end
 ```
 
+##### Example: Observers
+
 Alternatively, by using observers in the example below, we extract the `MessageMailer` logic out of `User` and put it in its own class, `UserObserver`, that watches for an event and dispatches an action accordingly:
 
 ```
@@ -35,6 +39,8 @@ class UserObserver < ActiveRecord::Observer
   end
 end
 ```
+
+##### Example: Observing multiple classes
 
 Observers are especially helpful in cases like the below where there are multiple models commingled and we want to hook into all of them to watch for some event. We can pull logic out of models where it doesn't belong, put it in its own separate place, observe actions, and still affect change as needed.
 
@@ -48,37 +54,36 @@ class AuditObserver < ActiveRecord::Observer
 end
 ```
 
-### Accounting for unseen side effects
+### AR::Observers and invisibility
 
-One thing to consider with observers is that we now have events that are not readily apparent in our observed class. Due to these unseen side effects, it can be less clear what's happening, and if there's a bug, it can be hard to track, since there is no direct link to the thing that is observing it.
+One thing to keep in mind with observers is that when we use them, since there is no visible reference to the observer in the observed class, we now have events that are not readily apparent in our observed class. 
 
-To mitigate this potential downside, we can write observers that reference the model they are observing. One way to do that is with `logger`. In this example from the [Rails documentation](http://api.rubyonrails.org/v2.3/classes/ActiveRecord/Observer.html), the observer uses `ActiveSupport::Logger` to log when specific callbacks are triggered:
+Due to these unseen side effects, it can be less clear what's happening. If there's a bug, it can be hard to track, since there is no direct link to the thing that is observing it.
 
-```
-class ContactObserver < ActiveRecord::Observer
-    def after_create(contact)
-      contact.logger.info('New contact added!')
-    end
+### When to use AR::Observers
 
-    def after_destroy(contact)
-      contact.logger.warn("Contact with an id of #{contact.id} was destroyed!")
-    end
-  end
-```
+Active Record Observers are useful when we:
+- want to stay updated on a certain process
+- want to maintain consistency
+- have multiple classes involved in an event
 
-### Staying in sync
+They require very little [setup](https://github.com/rails/rails-observers#installation), and since they are Active Record objects, they come rolled up with the functionality of Active Record. 
 
-Another thing to consider is that since we're dealing with application state, it's possible that as the application transitions from one state to another, our observers can become out of sync.
+Good use cases for Observers:
+- cached values
+- invalidate caches
+- tk
+- ...
 
-For example, payment processing transactions usually have many steps. Consider a case where a transaction is created but the payment is then rejected. If we have an observer with an `after_create` callback, that callback is going to fire after `create`, regardless of whether that transaction is eventually rolled back.
+### When *not* to use AR::Observers
 
-To account for this, we can use `before` and `after` hooks in callbacks to assure that we only inform observers after all changes have completed and the observer is heady to take action.
+It's also possible to overuse observers. 
 
-View the [Active Record Callbacks documentation](http://guides.rubyonrails.org/active_record_callbacks.html#available-callbacks) for a full list of callbacks in the order they will be executed.
+If there is just one thing that happens, we probably don't need to use observers. For example, our first example of sending a welcome email after a new user is created is probably simple enough that it doesn't actually need an observer. The same use case can be handled by extracting a service object.
 
+However, if you want to take additional actions after the user is create (for example, anything from the list above), it may be worth using an observer. 
 
-### when to use
-### when not to use
+...
 
 ### References
 
