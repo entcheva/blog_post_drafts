@@ -63,17 +63,17 @@ Due to these unseen side effects, it can be less clear what's happening. If ther
 ### When to use AR::Observers
 
 Active Record Observers are useful when we:
-- want to stay updated on a certain process
-- want to maintain consistency
-- have multiple classes involved in an event
+- want to stay updated on a certain process  
+- want to maintain consistency  
+- have multiple classes involved in an event  
 
 They require very little [setup](https://github.com/rails/rails-observers#installation), and since they are Active Record objects, they come rolled up with the functionality of Active Record. 
 
 Good use cases for Observers:
-- cached values
-- invalidate caches
-- tk
-- ...
+- cached values  
+- invalidate caches  
+- tk  
+- ...  
 
 ### When *not* to use AR::Observers
 
