@@ -56,34 +56,21 @@ end
 
 ### AR::Observers and invisibility
 
-One thing to keep in mind with observers is that when we use them, since there is no visible reference to the observer in the observed class, we now have events that are not readily apparent in our observed class. 
-
-Due to these unseen side effects, it can be less clear what's happening. If there's a bug, it can be hard to track, since there is no direct link to the thing that is observing it.
+One thing to keep in mind with observers is that there is no visible reference to the observer in the observed class. Since we now have unseen side effects that are not readily apparent in our observed class, it can be less clear what's happening. 
 
 ### When to use AR::Observers
 
-Active Record Observers are useful when we:
-- want to stay updated on a certain process  
-- want to maintain consistency  
-- have multiple classes involved in an event  
+Active Record Observers are useful when we want to stay updated on a certain process, and especially when we have multiple classes involved in an event. 
 
 They require very little [setup](https://github.com/rails/rails-observers#installation), and since they are Active Record objects, they come rolled up with the functionality of Active Record. 
 
-Good use cases for Observers:
-- cached values  
-- invalidate caches  
-- tk  
-- ...  
-
 ### When *not* to use AR::Observers
 
-It's also possible to overuse observers. 
+It's also possible to overuse observers. If there is just one thing that happens, we probably don't need to use observers. 
 
-If there is just one thing that happens, we probably don't need to use observers. For example, our first example of sending a welcome email after a new user is created is probably simple enough that it doesn't actually need an observer. The same use case can be handled by extracting a service object.
+For example, in our first code sample where we send a welcome email after a new user is created, the events are probably simple enough that we don't actually need an observer. The same use case can be handled by extracting a service object like `UserNotifier`.
 
-However, if you want to take additional actions after the user is create (for example, anything from the list above), it may be worth using an observer. 
-
-...
+However, if you want mutiple additional actions to take place after the user is created, it may be worth using an observer. 
 
 ### References
 
